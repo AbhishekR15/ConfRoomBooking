@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { LightningElement, track, wire, api } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
 import {fireEvent} from 'c/pubsub';
@@ -7,12 +7,6 @@ import {fireEvent} from 'c/pubsub';
 export default class CreateBookingRec extends LightningElement {
     @track cardTitle='New Booking Detail';
     @wire(CurrentPageReference) pageRef;
-    @track open = true;
-
-    @api 
-    openmodal() {
-        this.open = true
-    }
 
     handleSubmit(event){
         //event.preventDefault();       // stop the form from submitting
