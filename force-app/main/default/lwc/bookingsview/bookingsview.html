@@ -1,0 +1,24 @@
+<template>
+    <div style="background-color:white">
+            <div>
+                <div class="slds-grid slds-m-around_x-small">
+                    <div class="slds-col">
+                        <lightning-input type="date" name="datePicker" label="Select Date" required value={selectedDate}
+                            onchange={dateChanged}></lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-combobox name="location" label="Location" value={selectedLocation}
+                            placeholder="Select Location" options={locations} onchange={handleLocationChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+            </div>
+            <div class="timetable" lwc:dom="manual"></div>
+        
+        
+            <lightning-spinner variant="brand" if:false={isLoaded}
+                alternative-text="Loading...">
+            </lightning-spinner>
+        
+    </div>
+</template>
