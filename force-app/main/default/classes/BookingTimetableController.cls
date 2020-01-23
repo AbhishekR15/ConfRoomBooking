@@ -15,6 +15,7 @@ public with sharing class BookingTimetableController {
         return conferenceRoomsAndBookings;
     }
 
+    //get all locations from picklist field on conference room object
     @AuraEnabled
     public static List<String> getAllLocations(){
         List<String> pickListValuesList= new List<String>();
@@ -24,5 +25,20 @@ public with sharing class BookingTimetableController {
 			pickListValuesList.add(pickListVal.getLabel());
 		}     
 		return pickListValuesList;
+    }
+
+    @AuraEnabled
+    public static void createParticipantsFromBooking(string bookingId,List<string> userIds){
+        if(String.isNotBlank(bookingId)) {
+            List<Participant__c> participantsToInsert = new List<Participant__c>();
+            Participant__c organiser = new Participant__c(Booking_Detail__c = bookingId,Guest__c = UserInfo.getUserId(),Role__c='Organizer');
+            participantsToInsert.add(organiser);
+            for(string userId : userIds) {
+                Participant__c attendee = new Participant__c(Booking_Detail__c = bookingId,Guest__c = userId,Role__c='Attendee');
+                participantsToInsert.add(attendee);
+            }
+
+            insert participantsToInsert;
+        }
     }
 }

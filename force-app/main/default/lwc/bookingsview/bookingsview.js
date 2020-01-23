@@ -19,10 +19,7 @@ export default class Bookingsview extends LightningElement {
     @wire(CurrentPageReference) pageRef;
 
     connectedCallback() {
-        //Listen for event that a conference room is booked to update the timetable
         registerListener('conferenceroombooked', this.handleRoomBooked, this);
-
-        //load CSS from resources and initialize picklist,date and get data for today and all locations
         Promise.all([
             this.loadTimetableJS(),
             this.initializeTodaysDateInSelectedDate(),
@@ -43,6 +40,10 @@ export default class Bookingsview extends LightningElement {
 
     disconnectedCallback() {
         unregisterAllListeners(this);
+    }
+
+    renderedCallback() {
+        
     }
 
     initializeTodaysDateInSelectedDate() {
