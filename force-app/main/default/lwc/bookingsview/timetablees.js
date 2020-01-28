@@ -222,8 +222,8 @@ headerNode.setAttribute('name', 'scrollheader');
         const elementType = hasURL ? 'a' : 'span';
         const eventNode = node.appendChild(document.createElement(elementType));
         const smallNode = eventNode.appendChild(document.createElement('small'));
-        eventNode.title = event.name +' - '+ event.startDate.getHours()+':'+ event.startDate.getMinutes()+' - '+ event.endDate.getHours()+':'+ event.endDate.getMinutes();
-
+        eventNode.title = event.name +' - '+ this.convertToProperFormat(event.startDate)+' - '+ this.convertToProperFormat(event.endDate);
+        
         if (hasURL) {
             eventNode.href = event.options.url;
         }
@@ -244,6 +244,12 @@ headerNode.setAttribute('name', 'scrollheader');
         eventNode.style.width = this.computeEventBlockWidth(event);
         eventNode.style.left = this.computeEventBlockOffset(event);
         smallNode.textContent = event.name;
+    }
+
+    convertToProperFormat(timeToFormat) {
+        let hourString = timeToFormat.getHours() < 10 ? '0'+timeToFormat.getHours() : timeToFormat.getHours();
+        let minuteString = timeToFormat.getMinutes() < 10 ? '0'+timeToFormat.getMinutes() : timeToFormat.getMinutes();
+        return hourString +':'+minuteString;
     }
 
     computeEventBlockWidth(event) {

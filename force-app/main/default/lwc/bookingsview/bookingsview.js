@@ -18,7 +18,7 @@ export default class Bookingsview extends LightningElement {
     @track selectedLocation;
     @track isLoaded = false;
     logggedInUserId = strUserId;
-    @track isButtonDisabled = !this.isLoaded;
+    @track isButtonDisabled = false;
 
     @wire(CurrentPageReference) pageRef;
 
@@ -80,7 +80,7 @@ export default class Bookingsview extends LightningElement {
 
     formatDateInRequiredFormat(dateToFormat) { 
         let dateToSplit = new Date(dateToFormat); //Converts date from ISO-UTC 2015-03-25T12:00:00Z to Wed Mar 25 2015 05:30:00 GMT+0530 (India Standard Time)
-        return new Date(dateToSplit.getFullYear(),dateToSplit.getMonth()+1,dateToSplit.getDate(),dateToSplit.getHours() ,dateToSplit.getMinutes());
+        return new Date(dateToSplit.getFullYear(),dateToSplit.getMonth(),dateToSplit.getDate(),dateToSplit.getHours() ,dateToSplit.getMinutes());
     }
 
     changeIfEventStartsOnAPastDate(startTime,selectedDate) {
@@ -88,7 +88,7 @@ export default class Bookingsview extends LightningElement {
         if(startTime.getDate() < selectedDateAsDate.getDate() || startTime.getMonth() < selectedDateAsDate.getMonth() ||startTime.getFullYear() < selectedDateAsDate.getFullYear()) {
             startTime.setHours(0);
             startTime.setMinutes(1);
-            startTime.setDate(selectedDateAsDate.getDate());
+            startTime.setFullYear(selectedDateAsDate.getFullYear(),selectedDateAsDate.getMonth(),selectedDateAsDate.getDate());
             return startTime;
         } else {
             return startTime;
@@ -100,7 +100,7 @@ export default class Bookingsview extends LightningElement {
         if(endTime.getDate() > selectedDateAsDate.getDate() || endTime.getMonth() > selectedDateAsDate.getMonth() || endTime.getFullYear() > selectedDateAsDate.getFullYear()) {
             endTime.setHours(23);
             endTime.setMinutes(59);
-            endTime.setDate(selectedDateAsDate.getDate());
+            endTime.setFullYear(selectedDateAsDate.getFullYear(),selectedDateAsDate.getMonth(),selectedDateAsDate.getDate());
             return endTime;
         } else {
             return endTime;
@@ -201,6 +201,9 @@ export default class Bookingsview extends LightningElement {
                     tempLocationArray.push({label : location,value : location});
                 }
             });
+            //redo initialize the array as values may be duplicated from multiple clicks
+            this.locations = [];
+            this.locations.push({label : 'All', value : 'All'});
             this.locations = this.locations.concat(tempLocationArray);
         })
         .catch(error => {
@@ -234,12 +237,16 @@ export default class Bookingsview extends LightningElement {
 
     handleRefresh() {
         this.isLoaded = false;
+        this.isButtonDisabled = true;
         let p = new Promise((resolve) => {
             this.connectedCallback();
             resolve();
         });
-        p.then(() => {this.isLoaded = true;})
+        p.then(() => {this.isLoaded = true;
+            this.isButtonDisabled = false;
+        })
         .catch((error)=>{
+            this.isButtonDisabled = false;
             this.isLoaded = true;
             this.dispatchEvent(
                 new ShowToastEvent({
