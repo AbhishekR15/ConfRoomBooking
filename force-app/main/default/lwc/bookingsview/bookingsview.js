@@ -17,7 +17,7 @@ export default class Bookingsview extends LightningElement {
     @track locations;
     @track selectedLocation;
     @track isLoaded = false;
-    logggedInUserId = strUserId;
+    loggedInUserId = strUserId;
     @track isButtonDisabled = false;
 
     @wire(CurrentPageReference) pageRef;
@@ -66,16 +66,21 @@ export default class Bookingsview extends LightningElement {
         let timetable = new Timetable();
         timetable.setScope(0,0);
         timetable.addLocations(locations);
-        let startTime,endTime;
+        let startTime,endTime,options;
         events.forEach(event => {
             startTime = this.formatDateInRequiredFormat(event.StartTime);
             endTime = this.formatDateInRequiredFormat(event.EndTime);
             startTime = this.changeIfEventStartsOnAPastDate(startTime,this.selectedDate);
-            endTime = this.changeIfEventEndsOnAFutureDate(endTime,this.selectedDate); 
-            timetable.addEvent(event.Name,event.Room,startTime,endTime);
+            endTime = this.changeIfEventEndsOnAFutureDate(endTime,this.selectedDate);
+            options ={};
+            if(event.CreatedById === this.loggedInUserId) {
+                options = {class:"mybooking"};
+            }
+             
+            timetable.addEvent(event.Name,event.Room,startTime,endTime,options);
         });
         let renderer = new Renderer(timetable);
-        renderer.draw(this.template.querySelector(".timetable")); 
+        renderer.draw(this.template.querySelector(".timetable"));
     }
 
     formatDateInRequiredFormat(dateToFormat) { 
@@ -224,7 +229,7 @@ export default class Bookingsview extends LightningElement {
             locations.push(roomAndBooking.Name);
             if(roomAndBooking.Booking_Details__r != null && roomAndBooking.Booking_Details__r !== undefined) {
                 roomAndBooking.Booking_Details__r.forEach(booking => {
-                    bookings.push({Name : booking.Name,Room : roomAndBooking.Name,StartTime : booking.Start_Time__c,EndTime : booking.End_Time__c});
+                    bookings.push({Name : booking.Name,Room : roomAndBooking.Name,StartTime : booking.Start_Time__c,EndTime : booking.End_Time__c,CreatedById : booking.CreatedById});
                 });
             }
         });
@@ -232,7 +237,7 @@ export default class Bookingsview extends LightningElement {
     }
 
     handleRoomBooked() {
-        this.connectedCallback();
+        this.getBookingsByDateAndTimeFromApex();
     }
 
     handleRefresh() {
