@@ -92,7 +92,7 @@ export class syncscroll {
                     otherEl = elems[i++];
                     if (otherEl != el) {
                         if (updateX &&
-                            Math.round(
+                        Math.round(
                                 otherEl.scrollLeft -
                                 (scrollX = otherEl.eX =
                                  Math.round(xRate *

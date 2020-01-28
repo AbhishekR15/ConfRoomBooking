@@ -11,6 +11,9 @@
                             placeholder="Select Location" options={locations} onchange={handleLocationChange}>
                         </lightning-combobox>
                     </div>
+                    <div class="slds-col slds-m-around_large">
+                        <lightning-button label="Refresh" title="Refresh" onclick={handleRefresh} class="slds-m-left_x-small" disabled={isButtonDisabled}></lightning-button>
+                    </div>
                 </div>
             </div>
             <div class="timetable" lwc:dom="manual"></div>

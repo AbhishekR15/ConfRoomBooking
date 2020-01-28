@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 import { LightningElement,track,wire } from 'lwc';
@@ -7,6 +8,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import {Timetable,Renderer} from './timetablees';
 import getBookingsByDateAndTime from '@salesforce/apex/BookingTimetableController.getBookingsByDateAndTime';
 import getAllLocations from '@salesforce/apex/BookingTimetableController.getAllLocations';
+import strUserId from '@salesforce/user/Id';
 import {registerListener,unregisterAllListeners} from 'c/pubsub';
 import { CurrentPageReference } from 'lightning/navigation';
 
@@ -15,10 +17,13 @@ export default class Bookingsview extends LightningElement {
     @track locations;
     @track selectedLocation;
     @track isLoaded = false;
+    logggedInUserId = strUserId;
+    @track isButtonDisabled = !this.isLoaded;
 
     @wire(CurrentPageReference) pageRef;
 
     connectedCallback() {
+        this.isLoaded = false;
         registerListener('conferenceroombooked', this.handleRoomBooked, this);
         Promise.all([
             this.loadTimetableJS(),
@@ -59,12 +64,14 @@ export default class Bookingsview extends LightningElement {
 
     initTimeTable(locations,events) {       
         let timetable = new Timetable();
-        timetable.setScope(9, 21);
+        timetable.setScope(0,0);
         timetable.addLocations(locations);
         let startTime,endTime;
         events.forEach(event => {
             startTime = this.formatDateInRequiredFormat(event.StartTime);
             endTime = this.formatDateInRequiredFormat(event.EndTime);
+            startTime = this.changeIfEventStartsOnAPastDate(startTime,this.selectedDate);
+            endTime = this.changeIfEventEndsOnAFutureDate(endTime,this.selectedDate); 
             timetable.addEvent(event.Name,event.Room,startTime,endTime);
         });
         let renderer = new Renderer(timetable);
@@ -74,6 +81,30 @@ export default class Bookingsview extends LightningElement {
     formatDateInRequiredFormat(dateToFormat) { 
         let dateToSplit = new Date(dateToFormat); //Converts date from ISO-UTC 2015-03-25T12:00:00Z to Wed Mar 25 2015 05:30:00 GMT+0530 (India Standard Time)
         return new Date(dateToSplit.getFullYear(),dateToSplit.getMonth()+1,dateToSplit.getDate(),dateToSplit.getHours() ,dateToSplit.getMinutes());
+    }
+
+    changeIfEventStartsOnAPastDate(startTime,selectedDate) {
+        let selectedDateAsDate = new Date(selectedDate);
+        if(startTime.getDate() < selectedDateAsDate.getDate() || startTime.getMonth() < selectedDateAsDate.getMonth() ||startTime.getFullYear() < selectedDateAsDate.getFullYear()) {
+            startTime.setHours(0);
+            startTime.setMinutes(1);
+            startTime.setDate(selectedDateAsDate.getDate());
+            return startTime;
+        } else {
+            return startTime;
+        }
+    }
+
+    changeIfEventEndsOnAFutureDate(endTime,selectedDate) {
+        let selectedDateAsDate = new Date(selectedDate);
+        if(endTime.getDate() > selectedDateAsDate.getDate() || endTime.getMonth() > selectedDateAsDate.getMonth() || endTime.getFullYear() > selectedDateAsDate.getFullYear()) {
+            endTime.setHours(23);
+            endTime.setMinutes(59);
+            endTime.setDate(selectedDateAsDate.getDate());
+            return endTime;
+        } else {
+            return endTime;
+        }
     }
 
     loadTimetableJS() {
@@ -166,7 +197,9 @@ export default class Bookingsview extends LightningElement {
         .then((result) => {
             let tempLocationArray = [];
             result.forEach(location => {
-                tempLocationArray.push({label : location,value : location});
+                if(!tempLocationArray.includes({label : location,value : location})) {
+                    tempLocationArray.push({label : location,value : location});
+                }
             });
             this.locations = this.locations.concat(tempLocationArray);
         })
@@ -198,4 +231,25 @@ export default class Bookingsview extends LightningElement {
     handleRoomBooked() {
         this.connectedCallback();
     }
+
+    handleRefresh() {
+        this.isLoaded = false;
+        let p = new Promise((resolve) => {
+            this.connectedCallback();
+            resolve();
+        });
+        p.then(() => {this.isLoaded = true;})
+        .catch((error)=>{
+            this.isLoaded = true;
+            this.dispatchEvent(
+                new ShowToastEvent({
+                title : 'Error getting locations',
+                message : error.message,
+                variant : 'error',
+            }),
+            )
+        })
+        
+    }
+    
 }

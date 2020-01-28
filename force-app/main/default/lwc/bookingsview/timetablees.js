@@ -267,6 +267,9 @@ headerNode.setAttribute('name', 'scrollheader');
     draw(selector) {
         const timetable = this.timetable;      
               this.scopeDurationHours = timetable.getDurationHours(timetable.scope.hourStart, timetable.scope.hourEnd);
+              if(this.scopeDurationHours === 0 ) {
+                this.scopeDurationHours = 24;
+              }
               const container = selector;
               this.checkContainerPrecondition(container);
               this.emptyNode(container);
@@ -274,6 +277,11 @@ headerNode.setAttribute('name', 'scrollheader');
               this.appendTimetableSection(container);
               let sycscroll= new syncscroll();
               sycscroll.reset();
+              selector.scrollLeft = 0.33*selector.scrollWidth;
+              let x= document.getElementsByClassName("syncscroll");
+              if(x != null && x.length > 0) {
+                x[0].scrollLeft = 0.33 * x[0].scrollWidth;
+              }
           }
      
 }
