@@ -3,6 +3,7 @@ import getParticipants from '@salesforce/apex/BookingController.getParticipants'
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord} from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
+import sendCommunicationToParticipants from '@salesforce/apex/BookingDetailHelper.sendCommunicationToParticipants';
 
 
 export default class BookingController extends LightningElement {
@@ -71,6 +72,7 @@ export default class BookingController extends LightningElement {
 	    };
 		updateRecord(record)
 			.then(() => {
+				this.sendBookingCanceledEmailToParticipants(record.fields.Id);
 				this.dispatchEvent(
 					new ShowToastEvent({
 						title: 'Success',
@@ -107,7 +109,21 @@ export default class BookingController extends LightningElement {
 		});
 	}
 
-	handleNewBookingClick(event){
-		this.openModal = true;
+	sendBookingCanceledEmailToParticipants(recordId) {
+		sendCommunicationToParticipants({bookingId : recordId,emailType: 'delete'})
+		.then()
+		.catch((error) => {
+			this.dispatchEvent(
+				new ShowToastEvent({
+					title : 'Error sending booking canceled Email',
+					error : error.message,
+					variant : 'error'
+				})
+			)
+		});
 	}
+
+	/*handleNewBookingClick(event){
+		this.openModal = true;
+	}*/
 }

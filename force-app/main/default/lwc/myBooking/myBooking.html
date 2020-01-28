@@ -1,18 +1,8 @@
 <template>
     <lightning-card title="Meetings" icon-name="custom:custom14">
-		<template if:true={openModal} >
-			<div class="demo-only" style="height: 640px;">
-				<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-					<div class="slds-modal__container">
-						<c-create-booking-rec></c-create-booking-rec>
-					</div>
-				</section>
-				<div class="slds-backdrop slds-backdrop_open"></div>
-				</div>
-		</template> 
 		<div class="slds-m-around_medium">
 			<div class="slds-float_right slds-m-bottom_xx-small">
-				<lightning-button variant="brand" label="New Booking" title="New Booking" onclick={handleNewBookingClick} class="slds-m-left_x-small"></lightning-button>
+				<!--<lightning-button variant="brand" label="New Booking" title="New Booking" onclick={handleNewBookingClick} class="slds-m-left_x-small"></lightning-button>-->
 				<lightning-button variant="brand" label="Cancel Bookings" title="Cancel Bookings" onclick={cancelSelectedBookings} class="slds-m-left_x-small"></lightning-button>
 			</div>
 			<table class="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -21,6 +11,9 @@
 						<tr class="slds-line-height_reset">
 						  <th class="" scope="col">
 							<div class="slds-truncate" title=""></div>
+						  </th>
+						  <th class="" scope="col">
+							<div class="slds-truncate" title="Conference Room">Conference Room</div>
 						  </th>
 						  <th class="" scope="col">
 							<div class="slds-truncate" title="Booking Name">Name</div>
@@ -42,12 +35,13 @@
 					<tbody>
 						<template for:each={participants.data} for:item="participant">	
 							<tr key={participant.Booking_Detail__r.Id} class="slds-line-height_reset">
-								<template if:true={participant.Booking_Detail__r.Start_Time__c}>
+								<template if:true={participant.Can_Cancel_Booking__c}>
 									<th class="" scope="col" key={participant.Booking_Detail__r.Id}><lightning-input value={participant.Booking_Detail__r.Id} type="checkbox" onchange={enableCancelButton}></lightning-input></th>
 								</template>
-								<template if:false={participant.Booking_Detail__r.Start_Time__c}>
+								<template if:false={participant.Can_Cancel_Booking__c}>
 									<th class="" scope="col" key={participant.Booking_Detail__r.Id}><lightning-input type="checkbox" value={participant.Booking_Detail__r.Id} disabled></lightning-input></th>    
 								</template>
+								<th class="" scope="col" key={participant.Booking_Detail__r.Id}>{participant.Booking_Detail__r.Conference_Room__r.Name}</th>
 								<th class="" scope="col" key={participant.Booking_Detail__r.Id}>{participant.Booking_Detail__r.Name}</th>
 								<th class="" scope="col" key={participant.Booking_Detail__r.Id}>
 									<lightning-formatted-date-time key={participant.Booking_Detail__r.Id} value={participant.Booking_Detail__r.Start_Time__c} year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"

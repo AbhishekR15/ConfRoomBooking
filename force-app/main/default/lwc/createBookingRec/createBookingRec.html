@@ -4,17 +4,16 @@
              <div class="slds-m-around_medium">
                  <lightning-record-edit-form object-api-name="Booking_Detail__c" onsubmit={handleSubmit} onsuccess={handleSuccess}>
                      <lightning-messages></lightning-messages>
-                     <lightning-input-field field-name="Name"></lightning-input-field>
-                     <lightning-input-field field-name="Conference_Room__c"></lightning-input-field>
-                     <lightning-input-field field-name="Duration__c"></lightning-input-field>
-                     <lightning-input-field field-name="Start_Time__c"></lightning-input-field>
+                     <lightning-input-field field-name="Name" value={name}></lightning-input-field>
+                     <lightning-input-field field-name="Conference_Room__c" value={confRoom}></lightning-input-field>
+                     <lightning-input-field field-name="Duration__c" value={duration}></lightning-input-field>
+                     <lightning-input-field field-name="Start_Time__c" value={startTime}></lightning-input-field>
+                     <c-multi-select-lookup></c-multi-select-lookup>
                      <lightning-button class="slds-m-top_small"
                                      type="submit"
-                                     label="Create new" onclick={overrideValue}></lightning-button>
+                                     label="Create new"></lightning-button>
                  </lightning-record-edit-form>
              </div>
          </lightning-card>
     <!--</template>-->
  </template>
-
- 

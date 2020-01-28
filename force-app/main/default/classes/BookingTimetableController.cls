@@ -1,4 +1,4 @@
-public with sharing class BookingTimetableController {
+public without sharing class BookingTimetableController {
     
     //get room booking details for all rooms of a particular location
 	//params:
