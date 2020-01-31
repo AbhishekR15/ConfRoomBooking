@@ -1,0 +1,20 @@
+{
+  "name": "confroombooking",
+  "version": "1.0.0",
+  "description": "This guide helps Salesforce developers who are new to Visual Studio Code go from zero to a deployed app using Salesforce Extensions for VS Code and Salesforce CLI.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"test:unit": "sfdx-lwc-jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://chaturvediabhishek@bitbucket.org/abhishekr15/confroombooking.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/abhishekr15/confroombooking#readme",
+  "devDependencies": {
+    "@salesforce/sfdx-lwc-jest": "^0.6.2"
+  }
+}

@@ -40,15 +40,15 @@ const ROOM_BOOKING_LIST = [{
 		"Conference_Room__c": "a086F00002cCLHLQA4",
 		"Id": "a096F00002XsZWrQAN",
 		"Name": "Bluepineapple 1.0",
-		"Start_Time__c": "2020-01-30T02:30:00.000Z",
-		"End_Time__c": "2020-01-30T03:00:00.000Z",
+		"Start_Time__c": "2020-01-31T02:30:00.000Z",
+		"End_Time__c": "2020-01-31T03:00:00.000Z",
 		"CreatedById": "0056F00000CxYjLQAV"
 	}, {
 		"Conference_Room__c": "a086F00002cCLHLQA4",
 		"Id": "a096F00002XsZYUQA3",
 		"Name": "Bluepineapple 1.2",
-		"Start_Time__c": "2020-01-30T04:00:00.000Z",
-		"End_Time__c": "2020-01-30T04:30:00.000Z",
+		"Start_Time__c": "2020-01-31T04:00:00.000Z",
+		"End_Time__c": "2020-01-31T04:30:00.000Z",
 		"CreatedById": "0056F00000CxYjLQAV"
 	}]
 }, {
@@ -58,11 +58,21 @@ const ROOM_BOOKING_LIST = [{
 		"Conference_Room__c": "a086F00002cCL97QAG",
 		"Id": "a096F00002XsZd2QAF",
 		"Name": "Bluepineapple 1.3",
-		"Start_Time__c": "2020-01-30T02:30:00.000Z",
-		"End_Time__c": "2020-01-30T03:30:00.000Z",
+		"Start_Time__c": "2020-01-31T02:30:00.000Z",
+		"End_Time__c": "2020-01-31T03:30:00.000Z",
 		"CreatedById": "0056F00000CxYjLQAV"
 	}]
 
+}];
+
+const NO_ROOM_BOOKING_LIST = [{
+	"Id": "a086F00002cCLHLQA4",
+	"Name": "TestLocation1",
+	"Booking_Details__r": []
+}, {
+	"Id": "a086F00002cCL97QAG",
+	"Name": "TestLocation2",
+	"Booking_Details__r": []
 }];
 
 describe('c-createbookingsview',() => {
@@ -90,13 +100,14 @@ describe('c-createbookingsview',() => {
 
     it('Renders with tomorrow date and all rooms',()=> {
         getAllLocations.mockResolvedValue(LOCATIONS_LIST);
-        getBookingsByDateAndTime.mockResolvedValue(ROOM_BOOKING_LIST);
+        getBookingsByDateAndTime.mockResolvedValue(NO_ROOM_BOOKING_LIST);
         const element = createElement('c-bookingsview',{
             is : BookingView
         });
-        
+        element.selectedDate = "2020-02-01";
+        element.dispatchEvent(new CustomEvent('change',{target:{value : "2020-02-01"}}));
         document.body.appendChild(element);
-        element.selectedDate = "31-01-2020";
+        
         return Promise.resolve().then(() => {
             let locationElements = element.shadowRoot.querySelectorAll('div.timetable > aside > ul > li');
             expect(locationElements.length).toEqual(2);
