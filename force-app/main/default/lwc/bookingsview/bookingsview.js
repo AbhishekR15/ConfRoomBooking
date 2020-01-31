@@ -87,7 +87,7 @@ export default class Bookingsview extends LightningElement {
         let dateToSplit = new Date(dateToFormat); //Converts date from ISO-UTC 2015-03-25T12:00:00Z to Wed Mar 25 2015 05:30:00 GMT+0530 (India Standard Time)
         return new Date(dateToSplit.getFullYear(),dateToSplit.getMonth(),dateToSplit.getDate(),dateToSplit.getHours() ,dateToSplit.getMinutes());
     }
-
+    //If an event starts on a day before the chosen date, set the start time for todays section of the event to 00:01
     changeIfEventStartsOnAPastDate(startTime,selectedDate) {
         let selectedDateAsDate = new Date(selectedDate);
         if(startTime.getDate() < selectedDateAsDate.getDate() || startTime.getMonth() < selectedDateAsDate.getMonth() ||startTime.getFullYear() < selectedDateAsDate.getFullYear()) {
@@ -99,7 +99,7 @@ export default class Bookingsview extends LightningElement {
             return startTime;
         }
     }
-
+    //if an event ends on a date after the chosen date, set the end time for todays section of the event to 23:59
     changeIfEventEndsOnAFutureDate(endTime,selectedDate) {
         let selectedDateAsDate = new Date(selectedDate);
         if(endTime.getDate() > selectedDateAsDate.getDate() || endTime.getMonth() > selectedDateAsDate.getMonth() || endTime.getFullYear() > selectedDateAsDate.getFullYear()) {
