@@ -30,14 +30,7 @@ node {
 		println rc
 		
             // need to pull out assigned username
-            if (isUnix()) 
-		{
-		     rmsg = sh returnStdout: true, script: "${toolbelt}/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
-		}
-		else
-		{
-		   rmsg = bat returnStdout: true, script: "\"${toolbelt}\"/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
-		}
+            rmsg = sh returnStdout: true, script: "${toolbelt}/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
 	    printf rmsg
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(rmsg)
