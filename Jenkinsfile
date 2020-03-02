@@ -32,11 +32,11 @@ node {
             // need to pull out assigned username
             if (isUnix()) 
 		{
-		     rmsg = sh returnStdout: true, script: "${toolbelt}/sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+		     rmsg = sh returnStdout: true, script: "${toolbelt}/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
 		}
 		else
 		{
-		     rmsg = bat returnStdout: true, script: "\"${toolbelt}\"/sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+		   rmsg = bat returnStdout: true, script: "\"${toolbelt}\"/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
 		}
 	    printf rmsg
             def jsonSlurper = new JsonSlurperClassic()
