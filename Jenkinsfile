@@ -36,7 +36,7 @@ node {
             }else{
                  rc = bat returnStatus: true, script: "\"${toolbeltsfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             }
-            echo "sfdx org connect done"
+            println "sfdx org connect done"
 		if (rc != 0) { error 'hub org authorization failed' }
 
             // need to pull out assigned username
@@ -45,17 +45,17 @@ node {
 			}else{
 			   rmsg = bat returnStdout: true, script: "\"${toolbeltsfdx}\" force:source:deploy --manifest manifest/package.xml -u ${HUB_ORG}"
 			}
-            echo "sfdx force source deploy done"
+            println "sfdx force source deploy done"
 		
-            printf rmsg
+            println rmsg
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(rmsg)
             if (robj.status != 0) { error 'org creation failed: ' + robj.message }
             SFDC_USERNAME=robj.result.username
             robj = null
-	    echo "parse username done, end of method"
-	    echo "username"
-	    echo $SFDC_USERNAME
+	    println "parse username done, end of method"
+	    println "username"
+	    println $SFDC_USERNAME
         }
 
         stage('Push To Test Org') {
