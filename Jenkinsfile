@@ -40,6 +40,7 @@ node {
 	    else {
 	    rmsg = bat returnStdout: true, script: "\"${toolbelt}\"/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername --setalias my-hub-org"}	
 	    printf rmsg
+	    script: "${toolbelt}/sfdx force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername --setalias my-hub-org
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(rmsg)
             if (robj.status != 0) { error 'org creation failed: ' + robj.message }
