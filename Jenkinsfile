@@ -23,7 +23,6 @@ pipeline
 
         //Jenkins env vars
         SERIAL = System.currentTimeMillis()
-        BRANCH = env.BRANCH_NAME.replaceAll(/[\/\\]/, "")
 
         //SFDX vars
         def toolbelt = tool 'toolbelt'
