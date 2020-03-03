@@ -1,0 +1,12 @@
+{
+  "orgName": "ConfRoomBooking",
+  "edition": "Enterprise",
+  "orgPreferences": {
+    "enabled": [
+      "S1DesktopEnabled"
+    ],
+    "disabled": [
+      "ChatterEnabled"
+    ]
+  }
+}
