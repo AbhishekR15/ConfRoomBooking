@@ -54,7 +54,6 @@ pipeline
 
                     script 
                     {
-                        echo "on branch name: ${BRANCH}"
                         echo "1. DEV HUB auth"
                         def authStatus = sh returnStatus: true, script: "${toolbelt}/sfdx force:auth:jwt:grant -i ${CONNECTED_APP_CONSUMER_KEY} -u ${HUB_ORG} -f ${JWT_KEY_FILE} -s -r ${SFDC_HOST} --json --loglevel debug"
                         if (authStatus != 0) 
