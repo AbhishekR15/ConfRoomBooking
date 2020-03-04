@@ -34,14 +34,15 @@ node
         {
             if (isUnix())
             {
-                rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST} --json --loglevel debug"
             }
             else
             {
-                rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"    
+                rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST} --json --loglevel debug"    
             }
 
             if (rc != 0) { error 'hub org authorization failed' }
+            else { echo "Successfully authorized to DEV HUB ${HUB_ORG}" }
 
             // need to pull out assigned username
             if (isUnix()) 
@@ -52,6 +53,9 @@ rmsg = sh returnStdout: true, script: "${toolbelt} force:org:create --definition
             {
 rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
             }
+            if (!rmsg.contains("Successfully created scratch org")) {
+                error "Scratch Org creation failed" }
+           else {  echo orgStatus }
 
             printf rmsg
             println(rmsg)
