@@ -44,8 +44,8 @@ node
             if (rc != 0) { error 'hub org authorization failed' }
             else { echo "Successfully authorized to DEV HUB ${HUB_ORG}" }
             
-            bat 'sleep 400'
-            echo "sleep for 400 miliseconds"
+            bat 'sleep 10'
+            echo "sleep for 10 miliseconds"
             
             // need to pull out assigned username
             if (isUnix()) 
