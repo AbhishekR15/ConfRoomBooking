@@ -1,23 +1,13 @@
 {
-    "orgName": "ConfRoom",
-    "edition": "Developer",
-    "hasSampleData": "false",
-    "orgPreferences": {
-    "enabled": [
-      "S1DesktopEnabled"
-    ],
-    "disabled": []
-    "settings": {
-        "lightningExperienceSettings": {
-            "enableS1DesktopEnabled": true
-        },
-        "securitySettings": {
-            "passwordPolicies": {
-                "enableSetPasswordInApi": true
-            }
-        },
-        "mobileSettings": {
-            "enableS1EncryptedStoragePref2": false
-        }
+  "orgName": "ConferenceRoom",
+  "edition": "Developer",
+  "hasSampleData": "false",
+  "settings": {
+    "orgPreferenceSettings": {
+      "s1DesktopEnabled": true,
+      "selfSetPasswordInApi": true,
+      "s1EncryptedStoragePref2": false
     }
+  }
 }
+
