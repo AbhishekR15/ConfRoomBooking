@@ -28,7 +28,7 @@ node {
     ws{
     withCredentials([file(credentialsId: JWT_SERVER_KEY, variable: 'jwt_key_file')]) 
         {
-        sh 'use $jwt_key_file'
+        bat 'use "$jwt_key_file"'
         stage('Create Scratch Org') 
           {
             if (isUnix())
