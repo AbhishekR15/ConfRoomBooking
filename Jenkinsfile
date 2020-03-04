@@ -25,9 +25,12 @@ node {
         // when running in multi-branch job, one must issue this command
         checkout scm
     }
-
-    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-        stage('Create Scratch Org') {
+    ws{
+    withCredentials([file(credentialsId: JWT_SERVER_KEY, variable: 'jwt_key_file')]) 
+        {
+        sh 'use $jwt_key_file'
+        stage('Create Scratch Org') 
+          {
             if (isUnix())
             {
             rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
@@ -46,9 +49,8 @@ node {
             if (robj.status != 0) { error 'org creation failed: ' + robj.message }
             SFDC_USERNAME=robj.result.username
             robj = null
-
-        }
-
+          }
+        
         stage('Push To Test Org') {
             rc = sh returnStatus: true, script: "${toolbelt} force:source:push --targetusername ${SFDC_USERNAME}"
             if (rc != 0) {
@@ -59,7 +61,8 @@ node {
             if (rc != 0) {
                 error 'permset:assign failed'
             }
-        }
+         }
+       }    
 
         stage('Run Apex Test') {
             sh "mkdir -p ${RUN_ARTIFACT_DIR}"
