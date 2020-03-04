@@ -25,24 +25,27 @@ node {
         // when running in multi-branch job, one must issue this command
         checkout scm
     }
-    ws{
-    withCredentials([file(credentialsId: JWT_SERVER_KEY, variable: 'FILE')]) 
+    
+    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) 
+    {
+         stage('Create Scratch Org') 
         {
-        sh 'use $FILE'
-        stage('Create Scratch Org') 
-          {
-            if (isUnix())
-            {
-            rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${JWT_SERVER_KEY} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+            if (isUnix()){
+            rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             }
-            else
-            {
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${JWT_SERVER_KEY}  --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"    
+            else{
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"    
             }
             if (rc != 0) { error 'hub org authorization failed' }
 
             // need to pull out assigned username
+            if (isUnix()) {
             rmsg = sh returnStdout: true, script: "${toolbelt} force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
+            }
+            else
+            {
+            rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
+            }
             printf rmsg
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(rmsg)
@@ -51,7 +54,7 @@ node {
             robj = null
           }
         
-        stage('Push To Test Org') {
+          stage('Push To Test Org') {
             rc = sh returnStatus: true, script: "${toolbelt} force:source:push --targetusername ${SFDC_USERNAME}"
             if (rc != 0) {
                 error 'push failed'
