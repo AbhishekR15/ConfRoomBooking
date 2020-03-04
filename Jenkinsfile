@@ -18,8 +18,6 @@ node {
     println SFDC_HOST
     println CONNECTED_APP_CONSUMER_KEY
     println JWT_SERVER_KEY
-    
-    def toolbelt = tool 'toolbelt'
 
     def toolbelt = tool 'toolbelt'
 
