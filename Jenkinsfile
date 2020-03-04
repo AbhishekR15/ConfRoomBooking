@@ -10,7 +10,6 @@ node {
     def SFDC_HOST = env.SFDC_HOST_DH
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
     def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
-    def JWTKEYFILE = tool 'server_key'
     def toolbelt = tool 'toolbelt'
 
     stage('checkout source') {
@@ -18,13 +17,10 @@ node {
         checkout scm
     }
     
-    withCredentials([file(credentialsId: JWTKEYFILE, variable: 'jwt_key_file')])
+    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')])
     {
-        dir('subdir')
+       stage('Create Scratch Org') 
         {
-            sh 'use $jwt_key_file'
-            stage('Create Scratch Org') {
-
             if (isUnix())
             {
             rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}" 
@@ -50,9 +46,8 @@ node {
             if (robj.status != "ok") { error 'org creation failed: ' + robj.message }
             SFDC_USERNAME=robj.result.username
             robj = null
-
-             }
-        }
+         }
+        
 
         stage('Push To Test Org') {
             rc = sh returnStatus: true, script: "${toolbelt} force:source:push --targetusername ${SFDC_USERNAME}"
