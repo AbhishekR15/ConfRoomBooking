@@ -57,8 +57,14 @@ node {
         // -------------------------------------------------------------------------
 
         stage('Create Test Scratch Org') {
+            if (isUnix()){
             rc = command "${toolbelt}/sfdx force:org:create --targetdevhubusername HubOrg --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --wait 10 --durationdays 1"
-            if (rc != 0) {
+            }
+            else{
+            rc = command "\"${toolbelt}\"/sfdx force:org:create --targetdevhubusername HubOrg --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --wait 10 --durationdays 1"
+            }
+                
+                if (rc != 0) {
                 error 'Salesforce test scratch org creation failed.'
             }
         }
@@ -69,7 +75,11 @@ node {
         // -------------------------------------------------------------------------
 
         stage('Display Test Scratch Org') {
-            rc = command "${toolbelt}/sfdx force:org:display --targetusername ciorg"
+            if (isUnix()){
+            rc = command "${toolbelt}/sfdx force:org:display --targetusername ciorg"}
+            else {
+            rc = command "\"${toolbelt}\"/sfdx force:org:display --targetusername ciorg"
+            }
             if (rc != 0) {
                 error 'Salesforce test scratch org display failed.'
             }
