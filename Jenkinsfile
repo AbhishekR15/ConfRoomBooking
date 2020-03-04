@@ -43,15 +43,18 @@ node
 
             if (rc != 0) { error 'hub org authorization failed' }
             else { echo "Successfully authorized to DEV HUB ${HUB_ORG}" }
-
+            
+            bat 'sleep 400'
+            echo "sleep for 400 miliseconds"
+            
             // need to pull out assigned username
             if (isUnix()) 
             {
-rmsg = sh returnStdout: true, script: "${toolbelt} force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
+                rmsg = sh returnStdout: true, script: "${toolbelt} force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
             }
             else 
             {
-rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
+                rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
             }
             if (!rmsg.contains("Successfully created scratch org")) {
                 error "Scratch Org creation failed" }
