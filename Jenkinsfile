@@ -17,10 +17,13 @@ node {
         // when running in multi-branch job, one must issue this command
         checkout scm
     }
-    dir('subdir')
+    
     withCredentials([file(credentialsId: JWTKEYFILE, variable: 'jwt_key_file')])
-    {sh 'use $jwt_key_file'
-        stage('Create Scratch Org') {
+    {
+        dir('subdir')
+        {
+            sh 'use $jwt_key_file'
+            stage('Create Scratch Org') {
 
             if (isUnix())
             {
@@ -48,6 +51,7 @@ node {
             SFDC_USERNAME=robj.result.username
             robj = null
 
+             }
         }
 
         stage('Push To Test Org') {
