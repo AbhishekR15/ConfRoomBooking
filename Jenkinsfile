@@ -14,8 +14,12 @@ node {
     def TEST_LEVEL='RunLocalTests'
     def PACKAGE_NAME='0Ho1U000000CaUzSAK'
     def PACKAGE_VERSION
-
-
+    
+    Println 'KEY IS'
+    Println SF_CONSUMER_KEY
+    Println SF_USERNAME
+    Println SERVER_KEY_CREDENTALS_ID
+    
     def toolbelt = tool 'toolbelt'
 
 
